@@ -1,0 +1,14 @@
+{
+	"required": true,
+	"package": "net.fasttotemoffhand.mixin",
+	"compatibilityLevel": "JAVA_21",
+	"mixins": [
+		"FastTotemOffhandMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	},
+	"overwrites": {
+		"requireAnnotations": true
+	}
+}

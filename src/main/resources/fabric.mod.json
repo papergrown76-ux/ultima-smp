@@ -1,0 +1,38 @@
+{
+	"schemaVersion": 1,
+	"id": "fast_totem_offhand",
+	"version": "${version}",
+	"name": "Fast Totem Offhand",
+	"description": "Automatically moves a Totem of Undying into your offhand as fast as possible.",
+	"authors": [
+		"papergrown76"
+	],
+	"contact": {
+		"homepage": "",
+		"sources": ""
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/fast_totem_offhand/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"net.fasttotemoffhand.FastTotemOffhand"
+		],
+		"client": [
+			"net.fasttotemoffhand.client.FastTotemOffhandClient"
+		]
+	},
+	"mixins": [
+		"fast_totem_offhand.mixins.json",
+		{
+			"config": "fast_totem_offhand.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.19.3",
+		"minecraft": "~1.21.11",
+		"java": ">=21",
+		"fabric-api": "*"
+	}
+}

@@ -219,7 +219,7 @@ public class PlayerTracker {
 		// Anti-Knockback-Beobachtung für das Opfer starten
 		victimData.pendingKnockbackCheck = true;
 		victimData.hurtTick = tick;
-		victimData.posAtHurt = victim.getPos();
+		victimData.posAtHurt = new Vec3d(victim.getX(), victim.getY(), victim.getZ());
 		Vec3d away = new Vec3d(victim.getX() - bestAttacker.getX(), 0, victim.getZ() - bestAttacker.getZ());
 		victimData.expectedKnockbackDir = away.lengthSquared() < 1.0e-6 ? Vec3d.ZERO : away.normalize();
 	}

@@ -65,7 +65,7 @@ public class AntiKnockbackDetection implements DetectionModule {
 		}
 
 		// Horizontale Verschiebung seit dem Treffer, projiziert auf die KB-Richtung
-		Vec3d moved = player.getPos().subtract(data.posAtHurt);
+		Vec3d moved = new Vec3d(player.getX(), player.getY(), player.getZ()).subtract(data.posAtHurt);
 		double alongKb = moved.x * data.expectedKnockbackDir.x + moved.z * data.expectedKnockbackDir.z;
 
 		// Vertikaler Impuls: größtes Aufwärts-Delta in den Ticks nach dem Treffer
@@ -85,7 +85,7 @@ public class AntiKnockbackDetection implements DetectionModule {
 
 	/** Prüft, ob in Rückstoß-Richtung direkt ein solider Block steht. */
 	private boolean isBlockedInDirection(DetectionContext ctx, AbstractClientPlayerEntity player, Vec3d dir) {
-		Vec3d base = player.getPos().add(dir.multiply(0.8));
+		Vec3d base = new Vec3d(player.getX(), player.getY(), player.getZ()).add(dir.multiply(0.8));
 		for (double yOffset : new double[]{0.1, 1.0}) { // Fuß- und Körperhöhe
 			BlockPos pos = BlockPos.ofFloored(base.x, player.getY() + yOffset, base.z);
 			if (!ctx.world().getBlockState(pos).getCollisionShape(ctx.world(), pos).isEmpty()) {

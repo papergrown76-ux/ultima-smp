@@ -1,0 +1,48 @@
+# Baut die Client-Anticheat-Mod bei jedem Push und stellt die Jar als
+# Artifact bereit. Läuft auf GitHub-Runnern (freier Netzzugang zu Mojang/
+# FabricMC), inklusive Unit-Tests.
+name: Build Client Anticheat
+
+on:
+  push:
+    paths:
+      - "Client Anticheat/**"
+      - ".github/workflows/build-anticheat.yml"
+  pull_request:
+    paths:
+      - "Client Anticheat/**"
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: "Client Anticheat"
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: JDK 21 einrichten
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Gradle-Cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: gradle-${{ hashFiles('Client Anticheat/gradle/wrapper/gradle-wrapper.properties', 'Client Anticheat/gradle.properties') }}
+
+      - name: Bauen und testen
+        run: |
+          chmod +x gradlew
+          ./gradlew build --no-daemon --stacktrace
+
+      - name: Mod-Jar hochladen
+        uses: actions/upload-artifact@v4
+        with:
+          name: ultima-anticheat
+          path: "Client Anticheat/build/libs/*.jar"

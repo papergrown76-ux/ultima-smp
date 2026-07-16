@@ -5,12 +5,21 @@ bei verdächtigem Verhalten. Kein Server-Plugin, kein Banning – nur Anzeige un
 
 ## Features
 
-- **GUI-Overlay mit `Left Alt`** umschaltbar, drei Tabs:
+- **GUI-Overlay mit `Left Alt`** umschaltbar (Taste in den Minecraft-Steuerungsoptionen
+  umbelegbar), drei Tabs:
   - **Verdächtige:** Spielername, erkannter Cheat-Verdacht, Score, Schweregrad (gelb/orange/rot),
-    Zeitstempel, Bestätigungen anderer Mod-Nutzer („Mehrfach bestätigt")
+    Zeitstempel, Bestätigungen anderer Mod-Nutzer („Mehrfach bestätigt"). **Klick auf eine
+    Zeile** öffnet die Detail-Ansicht mit allen Modul-Scores und Bestätigungen – inklusive
+    **„Spieler ignorieren"** (Freunde-Whitelist, persistent).
   - **Verlauf:** alle bisherigen Benachrichtigungen zum Nachlesen
   - **Einstellungen:** jedes Modul einzeln an/aus + Schwellen-Slider, dazu globale Schalter
-    (Benachrichtigungen, Sound, Team-Meldungen) – persistent in `config/ultima_anticheat.json`
+    (Benachrichtigungen, Sound, Team-Meldungen, HUD) – persistent in `config/ultima_anticheat.json`
+- **Mini-HUD** oben rechts: zeigt dauerhaft die bis zu drei auffälligsten Spieler über der
+  Schwelle, ohne dass das GUI geöffnet sein muss (abschaltbar).
+- **Lag-Erkennung:** springt die Server-Weltzeit (Lag/Catch-up), pausieren alle
+  bewegungs-basierten Checks automatisch für ein paar Sekunden – der größte
+  False-Positive-Killer. Spieler weiter als 64 Blöcke werden gar nicht geprüft.
+- **Zweisprachig:** Deutsch und Englisch (`de_de`/`en_us`-Sprachdateien).
 - **11 Erkennungsmodule** (je ein eigenes Package unter `detection/`):
   Killaura, Reach, Aimbot, AutoClicker/CPS, NoSlow, Speed, Fly/Jesus/Step, Scaffold,
   Hitbox, Timer, Anti-Knockback
@@ -34,7 +43,12 @@ Yarn-Mappings `1.21.11+build.6`, Fabric Loader 0.19.3, Fabric API).
 ```
 
 Die fertige Mod liegt danach unter `build/libs/ultima-anticheat-1.0.0.jar`.
-Zum Testen im Entwicklungs-Client: `./gradlew runClient`.
+Zum Testen im Entwicklungs-Client: `./gradlew runClient`. Unit-Tests laufen mit
+`./gradlew test` (und automatisch bei jedem `build`).
+
+**CI:** Jeder Push baut die Mod automatisch über GitHub Actions
+(`.github/workflows/build-anticheat.yml` im Repo-Root); die fertige Jar hängt
+als Artifact „ultima-anticheat" am Workflow-Lauf.
 
 ## Installation
 

@@ -6,6 +6,7 @@ import com.ultimasmp.anticheat.client.track.PlayerTrackData;
 import com.ultimasmp.anticheat.client.track.TickSnapshot;
 
 import net.minecraft.client.network.AbstractClientPlayerEntity;
+import net.minecraft.client.resource.language.I18n;
 
 /**
  * Speed-/Movement-Anomalie-Erkennung.
@@ -33,7 +34,12 @@ public class SpeedDetection implements DetectionModule {
 
 	@Override
 	public String displayName() {
-		return "Speed";
+		return I18n.translate("ultima_anticheat.module.speed");
+	}
+
+	@Override
+	public boolean movementSensitive() {
+		return true;
 	}
 
 	@Override
@@ -47,7 +53,7 @@ public class SpeedDetection implements DetectionModule {
 		if (now.deltaXZ > BURST_PER_TICK && now.deltaXZ < TELEPORT_PER_TICK
 				&& now.hurtTime == 0 // Rückstoß kann kurz sehr schnell sein
 				&& data.cooldownPassed("speed_burst", ctx.tick(), 5)) {
-			ctx.flag(this, data, 8, String.format("%.1f Blöcke in einem Tick", now.deltaXZ));
+			ctx.flag(this, data, 8, I18n.translate("ultima_anticheat.detail.speed.burst", now.deltaXZ));
 		}
 
 		// Anhaltend: Durchschnitt über die letzten SUSTAINED_WINDOW Ticks,
@@ -70,7 +76,7 @@ public class SpeedDetection implements DetectionModule {
 		double avgBps = total / counted * 20.0;
 		if (avgBps > SUSTAINED_BPS && data.cooldownPassed("speed_sustained", ctx.tick(), 20)) {
 			double amount = Math.min(25.0, (avgBps - SUSTAINED_BPS) * 4.0 + 8.0);
-			ctx.flag(this, data, amount, String.format("%.1f Blöcke/s über %d Ticks", avgBps, counted));
+			ctx.flag(this, data, amount, I18n.translate("ultima_anticheat.detail.speed.sustained", avgBps, counted));
 		}
 	}
 }

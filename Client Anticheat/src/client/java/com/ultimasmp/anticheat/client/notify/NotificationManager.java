@@ -8,6 +8,7 @@ import com.ultimasmp.anticheat.client.config.ConfigManager;
 import com.ultimasmp.anticheat.client.suspicion.Severity;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
@@ -42,8 +43,10 @@ public class NotificationManager {
 		}
 		Text chat = Text.literal(PREFIX).formatted(Formatting.AQUA)
 				.append(Text.literal(playerName + " ").formatted(Formatting.WHITE))
-				.append(Text.literal(moduleName + "-Verdacht").formatted(severity.formatting))
-				.append(Text.literal(" (Score " + score + ", " + severity.label + ")").formatted(Formatting.GRAY))
+				.append(Text.literal(I18n.translate("ultima_anticheat.notify.suspicion_of", moduleName))
+						.formatted(severity.formatting))
+				.append(Text.literal(" (" + I18n.translate("ultima_anticheat.notify.score", score, severity.label()) + ")")
+						.formatted(Formatting.GRAY))
 				.append(detail == null || detail.isEmpty()
 						? Text.literal("")
 						: Text.literal(" – " + detail).formatted(Formatting.DARK_GRAY));
@@ -60,11 +63,13 @@ public class NotificationManager {
 		}
 		Text chat = Text.literal(PREFIX).formatted(Formatting.AQUA)
 				.append(Text.literal(playerName + " ").formatted(Formatting.WHITE))
-				.append(Text.literal(moduleName + "-Verdacht").formatted(severity.formatting))
-				.append(Text.literal(" (Score " + score + ") ").formatted(Formatting.GRAY))
-				.append(Text.literal("gemeldet von " + reporterName).formatted(Formatting.DARK_AQUA));
+				.append(Text.literal(I18n.translate("ultima_anticheat.notify.suspicion_of", moduleName))
+						.formatted(severity.formatting))
+				.append(Text.literal(" (" + score + ") ").formatted(Formatting.GRAY))
+				.append(Text.literal(I18n.translate("ultima_anticheat.notify.reported_by", reporterName))
+						.formatted(Formatting.DARK_AQUA));
 		Text actionBar = Text.literal(PREFIX).formatted(Formatting.AQUA)
-				.append(Text.literal(playerName + ": " + moduleName + " – von " + reporterName).formatted(severity.formatting));
+				.append(Text.literal(playerName + ": " + moduleName + " – " + reporterName).formatted(severity.formatting));
 		show(chat, actionBar);
 	}
 

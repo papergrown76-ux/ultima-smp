@@ -10,6 +10,7 @@ import com.ultimasmp.anticheat.client.track.AttackEvent;
 import com.ultimasmp.anticheat.client.track.PlayerTrackData;
 
 import net.minecraft.client.network.AbstractClientPlayerEntity;
+import net.minecraft.client.resource.language.I18n;
 
 /**
  * Killaura-Erkennung.
@@ -35,7 +36,7 @@ public class KillauraDetection implements DetectionModule {
 
 	@Override
 	public String displayName() {
-		return "Killaura";
+		return I18n.translate("ultima_anticheat.module.killaura");
 	}
 
 	@Override
@@ -47,16 +48,13 @@ public class KillauraDetection implements DetectionModule {
 			}
 
 			if (event.lookOffsetDeg() > FAR_OUT_OF_FOV_DEG) {
-				ctx.flag(this, data, 22,
-						String.format("Treffer %.0f° außerhalb des Sichtfelds", event.lookOffsetDeg()));
+				ctx.flag(this, data, 22, I18n.translate("ultima_anticheat.detail.killaura.fov", event.lookOffsetDeg()));
 			} else if (event.lookOffsetDeg() > OUT_OF_FOV_DEG) {
-				ctx.flag(this, data, 14,
-						String.format("Treffer %.0f° neben der Blickrichtung", event.lookOffsetDeg()));
+				ctx.flag(this, data, 14, I18n.translate("ultima_anticheat.detail.killaura.near_fov", event.lookOffsetDeg()));
 			}
 
 			if (event.rotDeltaPreSwing() > PRE_SWING_SNAP_DEG) {
-				ctx.flag(this, data, 8,
-						String.format("Rotationssprung %.0f°/Tick vor dem Schlag", event.rotDeltaPreSwing()));
+				ctx.flag(this, data, 8, I18n.translate("ultima_anticheat.detail.killaura.snap", event.rotDeltaPreSwing()));
 			}
 
 			// Mehrere verschiedene Opfer in extrem kurzer Zeit?
@@ -67,7 +65,7 @@ public class KillauraDetection implements DetectionModule {
 				}
 			}
 			if (victims.size() >= 2 && data.cooldownPassed("killaura_multi", ctx.tick(), 10)) {
-				ctx.flag(this, data, 18, victims.size() + " Ziele in " + MULTI_TARGET_WINDOW + " Ticks");
+				ctx.flag(this, data, 18, I18n.translate("ultima_anticheat.detail.killaura.multi", victims.size(), MULTI_TARGET_WINDOW));
 			}
 		}
 	}

@@ -6,6 +6,7 @@ import com.ultimasmp.anticheat.client.track.AttackEvent;
 import com.ultimasmp.anticheat.client.track.PlayerTrackData;
 
 import net.minecraft.client.network.AbstractClientPlayerEntity;
+import net.minecraft.client.resource.language.I18n;
 
 /**
  * Hitbox-Erweiterungs-Erkennung: auffällig hohe Trefferquote bei
@@ -30,7 +31,7 @@ public class HitboxDetection implements DetectionModule {
 
 	@Override
 	public String displayName() {
-		return "Hitbox";
+		return I18n.translate("ultima_anticheat.module.hitbox");
 	}
 
 	@Override
@@ -68,10 +69,10 @@ public class HitboxDetection implements DetectionModule {
 		double avgOffset = offsetSum / total;
 		if (oddRatio > 0.5 && data.cooldownPassed("hitbox_ratio", ctx.tick(), 100)) {
 			ctx.flag(this, data, 15,
-					String.format("%.0f%% der Treffer bei > %.0f° Abweichung", oddRatio * 100, ODD_ANGLE_DEG));
+					I18n.translate("ultima_anticheat.detail.hitbox.ratio", oddRatio * 100, ODD_ANGLE_DEG));
 		} else if (avgOffset > 20.0 && data.cooldownPassed("hitbox_avg", ctx.tick(), 100)) {
 			ctx.flag(this, data, 10,
-					String.format("mittlere Treffer-Abweichung %.0f°", avgOffset));
+					I18n.translate("ultima_anticheat.detail.hitbox.avg", avgOffset));
 		}
 	}
 }

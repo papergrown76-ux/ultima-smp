@@ -1,6 +1,8 @@
 package com.ultimasmp.anticheat.client.config;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -14,6 +16,11 @@ public class ModConfig {
 	public boolean soundEnabled = true;
 	/** Eigene Verdachtsmeldungen mit anderen Mod-Nutzern teilen? */
 	public boolean shareEnabled = true;
+	/** Mini-HUD mit den Top-Verdächtigen dauerhaft einblenden? */
+	public boolean hudEnabled = true;
+
+	/** Ignorierte Spieler (Freunde-Whitelist), Namen in Kleinschreibung. */
+	public List<String> ignoredPlayers = new ArrayList<>();
 
 	/** Einstellungen pro Detection-Modul, Schlüssel = Modul-ID (z. B. "killaura"). */
 	public Map<String, ModuleSetting> modules = new LinkedHashMap<>();

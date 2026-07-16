@@ -6,6 +6,7 @@ import com.ultimasmp.anticheat.client.track.AttackEvent;
 import com.ultimasmp.anticheat.client.track.PlayerTrackData;
 
 import net.minecraft.client.network.AbstractClientPlayerEntity;
+import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.network.PlayerListEntry;
 
 /**
@@ -31,7 +32,12 @@ public class ReachDetection implements DetectionModule {
 
 	@Override
 	public String displayName() {
-		return "Reach";
+		return I18n.translate("ultima_anticheat.module.reach");
+	}
+
+	@Override
+	public boolean movementSensitive() {
+		return true;
 	}
 
 	@Override
@@ -51,7 +57,7 @@ public class ReachDetection implements DetectionModule {
 			if (distance > threshold && distance < IGNORE_ABOVE) {
 				// Je weiter über der Schwelle, desto stärker steigt der Verdacht
 				double amount = Math.min(30.0, (distance - threshold) * 30.0 + 8.0);
-				ctx.flag(this, data, amount, String.format("Treffer auf %.2f Blöcke", distance));
+				ctx.flag(this, data, amount, I18n.translate("ultima_anticheat.detail.reach.hit", distance));
 			}
 		}
 	}

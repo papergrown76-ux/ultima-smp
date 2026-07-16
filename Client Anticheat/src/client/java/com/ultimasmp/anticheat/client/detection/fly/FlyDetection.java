@@ -6,6 +6,7 @@ import com.ultimasmp.anticheat.client.track.PlayerTrackData;
 import com.ultimasmp.anticheat.client.track.TickSnapshot;
 
 import net.minecraft.client.network.AbstractClientPlayerEntity;
+import net.minecraft.client.resource.language.I18n;
 
 /**
  * Fly-/Jesus-/Step-Erkennung: unnatürliches Y-Achsen-Verhalten ohne
@@ -33,7 +34,12 @@ public class FlyDetection implements DetectionModule {
 
 	@Override
 	public String displayName() {
-		return "Fly/Jesus";
+		return I18n.translate("ultima_anticheat.module.fly");
+	}
+
+	@Override
+	public boolean movementSensitive() {
+		return true;
 	}
 
 	@Override
@@ -62,31 +68,31 @@ public class FlyDetection implements DetectionModule {
 		// Hover: lange Airtime praktisch ohne Vertikalbewegung
 		if (data.airTicks > HOVER_MIN_AIR_TICKS && dyCount >= 4 && Math.abs(avgDy) < 0.02
 				&& data.cooldownPassed("fly_hover", ctx.tick(), 10)) {
-			ctx.flag(this, data, 10, "schwebt seit " + data.airTicks + " Ticks");
+			ctx.flag(this, data, 10, I18n.translate("ultima_anticheat.detail.fly.hover", data.airTicks));
 		}
 
 		// Steigen ohne Sprungbogen: Nach dem Absprung nimmt dY sofort ab;
 		// wer nach 10+ Ticks Luft noch deutlich steigt, fliegt.
 		if (data.airTicks > RISE_MIN_AIR_TICKS && dyCount >= 4 && avgDy > 0.1
 				&& data.cooldownPassed("fly_rise", ctx.tick(), 10)) {
-			ctx.flag(this, data, 12, String.format("steigt in der Luft (%.2f Blöcke/Tick)", avgDy));
+			ctx.flag(this, data, 12, I18n.translate("ultima_anticheat.detail.fly.rise", avgDy));
 		}
 
 		// Sehr lange Airtime (normaler Fall von Weltdecke ~5s wäre mit Fallgeschwindigkeit)
 		if (data.airTicks > LONG_AIR_TICKS && data.cooldownPassed("fly_long", ctx.tick(), 40)) {
-			ctx.flag(this, data, 8, data.airTicks + " Ticks ohne Bodenkontakt");
+			ctx.flag(this, data, 8, I18n.translate("ultima_anticheat.detail.fly.airtime", data.airTicks));
 		}
 
 		// Jesus: schnelle, ebene Bewegung auf der Wasseroberfläche
 		if (data.waterSurfaceTicks > JESUS_MIN_TICKS && data.cooldownPassed("fly_jesus", ctx.tick(), 15)) {
-			ctx.flag(this, data, 12, "läuft über Wasser");
+			ctx.flag(this, data, 12, I18n.translate("ultima_anticheat.detail.fly.jesus"));
 		}
 
 		// Step: aus dem Stand einen ganzen Block hochgesetzt (Vanilla-Step ist 0.6)
 		if (now.consecutive && now.grounded && prev2 != null && prev2.grounded
 				&& now.deltaY > 0.9 && now.deltaY < 1.6
 				&& data.cooldownPassed("fly_step", ctx.tick(), 10)) {
-			ctx.flag(this, data, 10, String.format("Step um %.1f Blöcke ohne Sprung", now.deltaY));
+			ctx.flag(this, data, 10, I18n.translate("ultima_anticheat.detail.fly.step", now.deltaY));
 		}
 	}
 }

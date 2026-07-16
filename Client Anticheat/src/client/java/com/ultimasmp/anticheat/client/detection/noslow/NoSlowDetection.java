@@ -6,6 +6,7 @@ import com.ultimasmp.anticheat.client.track.PlayerTrackData;
 import com.ultimasmp.anticheat.client.track.TickSnapshot;
 
 import net.minecraft.client.network.AbstractClientPlayerEntity;
+import net.minecraft.client.resource.language.I18n;
 
 /**
  * NoSlow-Erkennung: normale Bewegungsgeschwindigkeit, obwohl der Spieler
@@ -28,7 +29,12 @@ public class NoSlowDetection implements DetectionModule {
 
 	@Override
 	public String displayName() {
-		return "NoSlow";
+		return I18n.translate("ultima_anticheat.module.noslow");
+	}
+
+	@Override
+	public boolean movementSensitive() {
+		return true;
 	}
 
 	@Override
@@ -44,7 +50,7 @@ public class NoSlowDetection implements DetectionModule {
 		if (bps > MAX_LEGIT_BPS && data.cooldownPassed("noslow", ctx.tick(), 10)) {
 			double amount = Math.min(20.0, (bps - MAX_LEGIT_BPS) * 5.0 + 6.0);
 			ctx.flag(this, data, amount,
-					String.format("%.1f Blöcke/s während Item-Benutzung", bps));
+					I18n.translate("ultima_anticheat.detail.noslow.fast", bps));
 		}
 	}
 }

@@ -28,6 +28,9 @@ import net.minecraft.world.GameMode;
  * übersprungen (keine Rechenzeit, keine Notifications, keine GUI-Einträge).
  */
 public class DetectionManager {
+	/** Spieler weiter als 64 Blöcke werden nicht geprüft. */
+	private static final double MAX_CHECK_DISTANCE_SQ = 64.0 * 64.0;
+
 	private final ConfigManager configManager;
 	private final List<DetectionModule> modules;
 	private final Map<String, DetectionModule> byId = new HashMap<>();
@@ -75,12 +78,24 @@ public class DetectionManager {
 				|| configManager.module("anti_knockback").enabled;
 	}
 
-	public void runChecks(DetectionContext ctx) {
-		if (ctx.client().getNetworkHandler() == null) {
+	/**
+	 * @param serverUnstable true bei erkanntem Server-Lag; Bewegungs-Module
+	 *                       werden dann pausiert (siehe ServerLagMonitor)
+	 */
+	public void runChecks(DetectionContext ctx, boolean serverUnstable) {
+		if (ctx.client().getNetworkHandler() == null || ctx.client().player == null) {
 			return;
 		}
 		for (AbstractClientPlayerEntity player : ctx.world().getPlayers()) {
 			if (player == ctx.client().player) {
+				continue;
+			}
+			// Weit entfernte Spieler: Daten sind zu grob, Rechenzeit sparen
+			if (player.squaredDistanceTo(ctx.client().player) > MAX_CHECK_DISTANCE_SQ) {
+				continue;
+			}
+			// Ignorierte Spieler (Freunde-Whitelist) komplett überspringen
+			if (configManager.isIgnored(player.getName().getString())) {
 				continue;
 			}
 			PlayerTrackData data = ctx.tracker().get(player.getUuid());
@@ -93,6 +108,9 @@ public class DetectionManager {
 				continue;
 			}
 			for (DetectionModule module : modules) {
+				if (serverUnstable && module.movementSensitive()) {
+					continue;
+				}
 				if (isEnabled(module)) {
 					module.check(ctx, player, data);
 				}

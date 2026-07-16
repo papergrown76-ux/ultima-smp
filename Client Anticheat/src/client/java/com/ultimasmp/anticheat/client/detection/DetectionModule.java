@@ -14,8 +14,17 @@ public interface DetectionModule {
 	/** Stabile ID (klein, nur a-z/_): Schlüssel für Config und Netzwerkprotokoll. */
 	String id();
 
-	/** Anzeigename für GUI und Benachrichtigungen. */
+	/** Anzeigename für GUI und Benachrichtigungen (lokalisiert). */
 	String displayName();
+
+	/**
+	 * Bewegungs-sensitive Module werten Positionsdaten aus und werden bei
+	 * erkanntem Server-Lag automatisch pausiert (laggende Server stauchen
+	 * und teleportieren Spieler-Positionen -> False Positives).
+	 */
+	default boolean movementSensitive() {
+		return false;
+	}
 
 	/**
 	 * Wird pro Client-Tick für jeden beobachteten fremden Spieler aufgerufen

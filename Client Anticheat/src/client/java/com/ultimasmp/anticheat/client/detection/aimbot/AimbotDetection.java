@@ -7,6 +7,7 @@ import com.ultimasmp.anticheat.client.track.TickSnapshot;
 import com.ultimasmp.anticheat.client.util.MathUtil;
 
 import net.minecraft.client.network.AbstractClientPlayerEntity;
+import net.minecraft.client.resource.language.I18n;
 import net.minecraft.util.math.Vec3d;
 
 /**
@@ -34,7 +35,7 @@ public class AimbotDetection implements DetectionModule {
 
 	@Override
 	public String displayName() {
-		return "Aimbot";
+		return I18n.translate("ultima_anticheat.module.aimbot");
 	}
 
 	@Override
@@ -66,7 +67,7 @@ public class AimbotDetection implements DetectionModule {
 					&& data.cooldownPassed("aimbot", ctx.tick(), 5)) {
 				double amount = Math.min(25.0, rotDelta / 6.0 + 8.0);
 				ctx.flag(this, data, amount,
-						String.format("%.0f°-Snap auf den Kopf von %s", rotDelta, target.getName().getString()));
+						I18n.translate("ultima_anticheat.detail.aimbot.snap", rotDelta, target.getName().getString()));
 				return;
 			}
 		}

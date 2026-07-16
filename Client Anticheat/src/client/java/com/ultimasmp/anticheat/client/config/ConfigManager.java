@@ -28,6 +28,20 @@ public class ConfigManager {
 		return config.modules.computeIfAbsent(id, k -> new ModConfig.ModuleSetting());
 	}
 
+	/** Steht der Spieler auf der Freunde-Whitelist? */
+	public boolean isIgnored(String playerName) {
+		return config.ignoredPlayers.contains(playerName.toLowerCase(java.util.Locale.ROOT));
+	}
+
+	/** Whitelist-Eintrag umschalten und sofort speichern. */
+	public void toggleIgnored(String playerName) {
+		String key = playerName.toLowerCase(java.util.Locale.ROOT);
+		if (!config.ignoredPlayers.remove(key)) {
+			config.ignoredPlayers.add(key);
+		}
+		save();
+	}
+
 	public void load() {
 		try {
 			if (Files.exists(file)) {
@@ -35,6 +49,9 @@ public class ConfigManager {
 				if (loaded != null) {
 					if (loaded.modules == null) {
 						loaded.modules = new java.util.LinkedHashMap<>();
+					}
+					if (loaded.ignoredPlayers == null) {
+						loaded.ignoredPlayers = new java.util.ArrayList<>();
 					}
 					config = loaded;
 				}

@@ -16,11 +16,13 @@ import net.minecraft.util.Uuids;
  * ihn ohnehin und setzt ihn beim Weiterleiten selbst ein. So kann niemand
  * Meldungen im Namen anderer Spieler fälschen.
  */
-public record ReportC2SPayload(UUID reportedUuid, String reportedName, String detectionId, int score) implements CustomPayload {
+public record ReportC2SPayload(int protocolVersion, UUID reportedUuid, String reportedName,
+							   String detectionId, int score) implements CustomPayload {
 	public static final CustomPayload.Id<ReportC2SPayload> ID =
 			new CustomPayload.Id<>(Identifier.of("ultima_anticheat", "report_c2s"));
 
 	public static final PacketCodec<RegistryByteBuf, ReportC2SPayload> CODEC = PacketCodec.tuple(
+			PacketCodecs.VAR_INT, ReportC2SPayload::protocolVersion,
 			Uuids.PACKET_CODEC, ReportC2SPayload::reportedUuid,
 			PacketCodecs.STRING, ReportC2SPayload::reportedName,
 			PacketCodecs.STRING, ReportC2SPayload::detectionId,

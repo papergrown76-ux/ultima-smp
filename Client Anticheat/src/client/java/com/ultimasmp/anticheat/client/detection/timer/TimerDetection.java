@@ -7,6 +7,7 @@ import com.ultimasmp.anticheat.client.track.TickSnapshot;
 import com.ultimasmp.anticheat.client.util.MathUtil;
 
 import net.minecraft.client.network.AbstractClientPlayerEntity;
+import net.minecraft.client.resource.language.I18n;
 
 /**
  * Timer-/Speed-Hack-Erkennung: Aktions- und Bewegungsfrequenz schneller, als
@@ -32,7 +33,12 @@ public class TimerDetection implements DetectionModule {
 
 	@Override
 	public String displayName() {
-		return "Timer";
+		return I18n.translate("ultima_anticheat.module.timer");
+	}
+
+	@Override
+	public boolean movementSensitive() {
+		return true;
 	}
 
 	@Override
@@ -73,8 +79,7 @@ public class TimerDetection implements DetectionModule {
 
 		if (mean > MIN_PER_TICK && stdDev < MAX_STDDEV
 				&& data.cooldownPassed("timer", ctx.tick(), WINDOW)) {
-			ctx.flag(this, data, 12, String.format(
-					"%.1f Blöcke/s bei Varianz ~0 (gleichmäßig überhöhte Tickrate)", mean * 20.0));
+			ctx.flag(this, data, 12, I18n.translate("ultima_anticheat.detail.timer.uniform", mean * 20.0));
 		}
 	}
 }

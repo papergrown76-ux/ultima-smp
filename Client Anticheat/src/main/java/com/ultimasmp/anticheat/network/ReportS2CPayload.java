@@ -14,13 +14,14 @@ import net.minecraft.util.Uuids;
  * anderen Mod-Nutzers. Der Melder (reporter) wird vom Server anhand der
  * tatsächlichen Verbindung gesetzt und ist damit fälschungssicher.
  */
-public record ReportS2CPayload(UUID reporterUuid, String reporterName,
+public record ReportS2CPayload(int protocolVersion, UUID reporterUuid, String reporterName,
 							   UUID reportedUuid, String reportedName,
 							   String detectionId, int score) implements CustomPayload {
 	public static final CustomPayload.Id<ReportS2CPayload> ID =
 			new CustomPayload.Id<>(Identifier.of("ultima_anticheat", "report_s2c"));
 
 	public static final PacketCodec<RegistryByteBuf, ReportS2CPayload> CODEC = PacketCodec.tuple(
+			PacketCodecs.VAR_INT, ReportS2CPayload::protocolVersion,
 			Uuids.PACKET_CODEC, ReportS2CPayload::reporterUuid,
 			PacketCodecs.STRING, ReportS2CPayload::reporterName,
 			Uuids.PACKET_CODEC, ReportS2CPayload::reportedUuid,

@@ -6,6 +6,7 @@ import com.ultimasmp.anticheat.client.track.PlayerTrackData;
 import com.ultimasmp.anticheat.client.util.MathUtil;
 
 import net.minecraft.client.network.AbstractClientPlayerEntity;
+import net.minecraft.client.resource.language.I18n;
 
 /**
  * AutoClicker-/CPS-Anomalie-Erkennung.
@@ -28,7 +29,7 @@ public class AutoClickerDetection implements DetectionModule {
 
 	@Override
 	public String displayName() {
-		return "AutoClicker";
+		return I18n.translate("ultima_anticheat.module.autoclicker");
 	}
 
 	@Override
@@ -64,11 +65,11 @@ public class AutoClickerDetection implements DetectionModule {
 		double stdDev = MathUtil.stdDev(intervals, count);
 
 		if (cps > 22.0 && data.cooldownPassed("autoclicker", ctx.tick(), 20)) {
-			ctx.flag(this, data, 20, String.format("%.1f CPS (unmenschlich hoch)", cps));
+			ctx.flag(this, data, 20, I18n.translate("ultima_anticheat.detail.autoclicker.high", cps));
 		} else if (cps >= 10.0 && stdDev < 0.45 && data.cooldownPassed("autoclicker", ctx.tick(), 20)) {
-			ctx.flag(this, data, 12, String.format("%.1f CPS bei Varianz %.2f (zu gleichmäßig)", cps, stdDev));
+			ctx.flag(this, data, 12, I18n.translate("ultima_anticheat.detail.autoclicker.uniform", cps, stdDev));
 		} else if (cps >= 8.0 && stdDev < 0.25 && data.cooldownPassed("autoclicker", ctx.tick(), 20)) {
-			ctx.flag(this, data, 10, String.format("%.1f CPS praktisch ohne Jitter", cps));
+			ctx.flag(this, data, 10, I18n.translate("ultima_anticheat.detail.autoclicker.nojitter", cps));
 		}
 	}
 }

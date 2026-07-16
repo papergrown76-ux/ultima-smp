@@ -104,6 +104,11 @@ public class SuspicionManager {
 		return list;
 	}
 
+	/** Eintrag sofort entfernen (z. B. wenn ein Spieler ignoriert wird). */
+	public void remove(UUID uuid) {
+		suspicions.remove(uuid);
+	}
+
 	public void clear() {
 		suspicions.clear();
 	}

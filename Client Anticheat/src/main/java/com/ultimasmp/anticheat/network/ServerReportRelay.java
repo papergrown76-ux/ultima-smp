@@ -1,9 +1,5 @@
 package com.ultimasmp.anticheat.network;
 
-import java.util.ArrayDeque;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 import java.util.regex.Pattern;
 
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -21,25 +17,15 @@ import net.minecraft.util.math.MathHelper;
  * Missbrauchsschutz:
  *  - Mindestabstand zwischen zwei Meldungen desselben Spielers (2 Sekunden)
  *  - Maximal 20 Meldungen pro Spieler und Minute
- *  - Strikte Validierung aller Felder (Namen, Detection-ID, Score)
+ *  - Strikte Validierung aller Felder (Protokoll-Version, Namen, ID, Score)
  *  - Der Absender wird server-seitig gesetzt und kann nicht gefälscht werden
  */
 public final class ServerReportRelay {
 	private static final Pattern NAME_PATTERN = Pattern.compile("^[A-Za-z0-9_]{1,16}$");
 	private static final Pattern DETECTION_ID_PATTERN = Pattern.compile("^[a-z_]{1,32}$");
 
-	private static final long MIN_GAP_MS = 2000;
-	private static final long WINDOW_MS = 60_000;
-	private static final int MAX_PER_WINDOW = 20;
-
-	/** Zustand des Rate-Limiters pro meldendem Spieler. */
-	private static final class RateState {
-		long lastMs;
-		final ArrayDeque<Long> window = new ArrayDeque<>();
-	}
-
 	// Nur vom Server-Thread benutzt (Fabric ruft Play-Payload-Handler dort auf).
-	private static final Map<UUID, RateState> RATE = new HashMap<>();
+	private static final RateLimiter RATE = new RateLimiter(2000, 60_000, 20);
 
 	private ServerReportRelay() {
 	}
@@ -50,21 +36,13 @@ public final class ServerReportRelay {
 			if (!isValid(payload)) {
 				return; // Ungültige/manipulierte Meldung still verwerfen
 			}
-
-			long now = System.currentTimeMillis();
-			RateState state = RATE.computeIfAbsent(sender.getUuid(), u -> new RateState());
-			if (now - state.lastMs < MIN_GAP_MS) {
-				return; // Zu schnell hintereinander -> Spam-Schutz
+			if (!RATE.tryAcquire(sender.getUuid(), System.currentTimeMillis())) {
+				return; // Spam-Schutz
 			}
-			state.window.removeIf(t -> now - t > WINDOW_MS);
-			if (state.window.size() >= MAX_PER_WINDOW) {
-				return; // Minuten-Limit erreicht
-			}
-			state.lastMs = now;
-			state.window.add(now);
 
 			// Absender-Identität wird hier vom Server gesetzt (fälschungssicher).
 			ReportS2CPayload out = new ReportS2CPayload(
+					AnticheatProtocol.VERSION,
 					sender.getUuid(),
 					sender.getName().getString(),
 					payload.reportedUuid(),
@@ -82,16 +60,12 @@ public final class ServerReportRelay {
 					ServerPlayNetworking.send(player, out);
 				}
 			}
-
-			// Speicher begrenzen: alte Rate-Limiter-Einträge gelegentlich entsorgen
-			if (RATE.size() > 512) {
-				RATE.entrySet().removeIf(e -> now - e.getValue().lastMs > WINDOW_MS * 5);
-			}
 		});
 	}
 
 	private static boolean isValid(ReportC2SPayload payload) {
-		return payload.reportedUuid() != null
+		return payload.protocolVersion() == AnticheatProtocol.VERSION
+				&& payload.reportedUuid() != null
 				&& payload.reportedName() != null && NAME_PATTERN.matcher(payload.reportedName()).matches()
 				&& payload.detectionId() != null && DETECTION_ID_PATTERN.matcher(payload.detectionId()).matches()
 				&& payload.score() >= 0 && payload.score() <= 100;

@@ -6,6 +6,7 @@ import com.ultimasmp.anticheat.client.track.PlayerTrackData;
 import com.ultimasmp.anticheat.client.track.TickSnapshot;
 
 import net.minecraft.client.network.AbstractClientPlayerEntity;
+import net.minecraft.client.resource.language.I18n;
 import net.minecraft.util.math.MathHelper;
 
 /**
@@ -33,7 +34,12 @@ public class ScaffoldDetection implements DetectionModule {
 
 	@Override
 	public String displayName() {
-		return "Scaffold";
+		return I18n.translate("ultima_anticheat.module.scaffold");
+	}
+
+	@Override
+	public boolean movementSensitive() {
+		return true;
 	}
 
 	@Override
@@ -83,8 +89,8 @@ public class ScaffoldDetection implements DetectionModule {
 			// Stärkerer Verdacht, wenn unter der Laufstrecke eben noch Luft war
 			double amount = hadAirBelow ? 14 : 8;
 			ctx.flag(this, data, amount, hadAirBelow
-					? "brückt rückwärts über Luft"
-					: "Scaffold-Bewegungsmuster");
+					? I18n.translate("ultima_anticheat.detail.scaffold.air")
+					: I18n.translate("ultima_anticheat.detail.scaffold.pattern"));
 		}
 	}
 }

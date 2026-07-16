@@ -23,11 +23,7 @@
 		]
 	},
 	"mixins": [
-		"fast_totem_offhand.mixins.json",
-		{
-			"config": "fast_totem_offhand.client.mixins.json",
-			"environment": "client"
-		}
+		"fast_totem_offhand.mixins.json"
 	],
 	"depends": {
 		"fabricloader": ">=0.19.3",

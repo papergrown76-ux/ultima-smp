@@ -3,7 +3,7 @@
 	"package": "net.fasttotemoffhand.mixin",
 	"compatibilityLevel": "JAVA_21",
 	"mixins": [
-		"FastTotemOffhandMixin"
+		"InventoryMenuMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

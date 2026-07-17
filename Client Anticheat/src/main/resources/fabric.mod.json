@@ -1,0 +1,30 @@
+{
+	"schemaVersion": 1,
+	"id": "ultima_anticheat",
+	"version": "${version}",
+	"name": "Ultima Client-Anticheat",
+	"description": "Client-seitige Anticheat-Beobachtung: erkennt verdächtiges Verhalten anderer Spieler (Killaura, Reach, Speed, Fly u.v.m.) und warnt den Nutzer. Kein Banning, nur Anzeige. Auf einem Fabric-Server installiert dient die Mod zusätzlich als Relay für den Austausch von Verdachtsmeldungen zwischen Mod-Nutzern.",
+	"authors": [
+		"papergrown76"
+	],
+	"contact": {
+		"sources": "https://github.com/papergrown76-ux/ultima-smp"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/ultima_anticheat/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"com.ultimasmp.anticheat.UltimaAnticheatMod"
+		],
+		"client": [
+			"com.ultimasmp.anticheat.client.UltimaAnticheatClient"
+		]
+	},
+	"depends": {
+		"fabricloader": ">=0.19.3",
+		"minecraft": "~1.21.11",
+		"java": ">=21",
+		"fabric-api": "*"
+	}
+}
